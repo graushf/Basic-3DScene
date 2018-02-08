@@ -1,0 +1,57 @@
+<html>
+    <head>
+        <title>Basic-3DScene</title>
+        <meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+        <script type="text/javascript" src="js/webgl-utils.js"></script>
+	    <script type="text/javascript" src="js/gl-matrix-test.js"></script>
+        <script type="text/javascript" src="js/main.js"></script>
+        <script type="text/javascript" src="js/Camera.js"></script>
+        <script type="text/javascript" src="js/Geometries.js"></script>
+        <script type="text/javascript" src="js/ObjectGeometryModels.js"></script>
+        <script type="text/javascript" src="js/Renderer.js"></script>
+        <script type="text/javascript" src="js/ShaderUtils.js"></script>
+
+        <script id="basic-shader-fs" type="x-shader/x-fragment">
+            precision mediump float;
+
+            varying vec3 vFragPos;
+            varying vec3 vNormal;
+            varying vec2 vTextureCoord;
+
+            uniform vec3 uStaticColor;
+
+            void main() {
+                gl_FragColor = vec4(uStaticColor, 1.0);
+            }
+        </script>
+
+        <script id="basic-shader-vs" type="x-shader/x-vertex">
+            attribute vec3 aVertexPosition;
+            attribute vec3 aVertexNormal;
+            attribute vec2 aTextureCoord;
+
+            varying vec3 vNormal;
+            varying vec3 vFragPos;
+            varying vec2 vTextureCoord;
+
+            uniform mat4 uMMatrix;
+            uniform mat4 uVMatrix;
+            uniform mat4 uPMatrix;
+
+            void main(void) {
+                gl_Position = uPMatrix * uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
+
+                vFragPos = vec3(uMMatrix * vec4(aVertexPosition, 1.0));
+                vTextureCoord = aTextureCoord;
+                vNormal = aVertexNormal;
+            }
+        </script>
+    </head>
+
+    <body onload="webGLStart();">
+        <div class="container">
+            <canvas id="WebGLCanvas" style="border: none;" width="1280" height="720">No canvas support</canvas>
+            <div id="overlay">
+            </div>
+        </div>
+    </body>
