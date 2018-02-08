@@ -6,16 +6,16 @@ var vMatrix = mat4.create();
 function drawScene(programToDraw)
  {
     drawPlane(programToDraw);
-    //drawTeapot(programToDraw, vec3.fromValues(0.0, -1.0, -60.0), vec3.fromValues(0.5, 0.5, 0.5));
+    drawTeapot(programToDraw, vec3.fromValues(0.0, -1.0, -60.0), vec3.fromValues(0.5, 0.5, 0.5));
     drawSphere(programToDraw, vec3.fromValues(10.5, -1.0, -50.0), vec4.fromValues(1.0, 1.0, 1.0));
-    //drawCube(programToDraw, vec3.fromValues(0.0, 5.0, -40.0), vec4.fromValues(2.0, 2.0, 2.0));
-    //drawRing(programToDraw, vec3.fromValues(0.0, 0.0, -10.0), vec3.fromValues(1.0, 1.0, 1.0));
-    //drawTorus(programToDraw, vec3.fromValues(0.0, 0.0, -10.0), vec3.fromValues(1.0, 1.0, 1.0));
-    //drawCylinder(programToDraw, vec3.fromValues(0.0, 0.0, -10.0), vec3.fromValues(1.0, 1.0, 1.0));
-    drawCone(programToDraw, vec3.fromValues(0.0, 0.0, -10.0), vec3.fromValues(1.0, 1.0, 1.0));
+    drawCube(programToDraw, vec3.fromValues(0.0, 5.0, -40.0), vec4.fromValues(2.0, 2.0, 2.0));
+    drawRing(programToDraw, vec3.fromValues(20.0, 0.0, -10.0), vec3.fromValues(1.0, 1.0, 1.0));
+    drawTorus(programToDraw, vec3.fromValues(-20.0, 0.0, -10.0), vec3.fromValues(1.0, 1.0, 1.0));
+    drawCylinder(programToDraw, vec3.fromValues(0.0, 0.0, -5.0), vec3.fromValues(1.0, 1.0, 1.0));
+    drawCone(programToDraw, vec3.fromValues(7.0, 0.0, -30.0), vec3.fromValues(1.0, 1.0, 1.0));
 }
 
-function drawPlane(programShading) 
+function drawPlane(programShading)
 {
     gl.useProgram(programShading);
 
@@ -40,6 +40,8 @@ function drawPlane(programShading)
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix)
+
+    vMatrix = myCamera.GetViewMatrix();
 
     transformGeometry(vec3.fromValues(0.0, -1.0, -60.0), vec3.fromValues(2000.0, 2000.0, 2000.0));
 
@@ -85,6 +87,8 @@ function drawTeapot(programShading, translatePos, scalePos)
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
+
+    vMatrix = myCamera.GetViewMatrix();
 
     transformGeometry(translatePos, scalePos);
 
@@ -132,6 +136,8 @@ function drawSphere(programShading, translatePos, scalePos)
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
 
+    vMatrix = myCamera.GetViewMatrix();
+
     transformGeometry(translatePos, scalePos);
 
     gl.uniformMatrix4fv(programShading.pMatrixUniform, false, pMatrix);
@@ -177,6 +183,8 @@ function drawCube(programShading, translatePos, scalePos)
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
+
+    vMatrix = myCamera.GetViewMatrix();
 
     transformGeometry(translatePos, scalePos);
 
@@ -224,6 +232,8 @@ function drawRing(programShading, translatePos, scalePos)
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
 
+    vMatrix = myCamera.GetViewMatrix();
+
     transformGeometry(translatePos, scalePos);
 
     gl.uniformMatrix4fv(programShading.pMatrixUniform, false, pMatrix);
@@ -269,6 +279,8 @@ function drawTorus(programShading, translatePos, scalePos)
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
+
+    vMatrix = myCamera.GetViewMatrix();
 
     transformGeometry(translatePos, scalePos);
 
@@ -316,6 +328,8 @@ function drawCylinder(programShading, translatePos, scalePos)
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
 
+    vMatrix = myCamera.GetViewMatrix();
+
     transformGeometry(translatePos, scalePos);
 
     gl.uniformMatrix4fv(programShading.pMatrixUniform, false, pMatrix);
@@ -361,6 +375,8 @@ function drawCone(programShading, translatePos, scalePos)
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
+
+    vMatrix = myCamera.GetViewMatrix();
 
     transformGeometry(translatePos, scalePos);
 

@@ -19,7 +19,6 @@ function initCamera() {
 	//positionFocalPlane = myCamera.Position + 0.0 * myCamera.Front;
 }
 
-
 function Camera3D() {
 	// Camera attributes
 	this.Position = [];
@@ -123,7 +122,6 @@ function Camera3D() {
 		var pPatrix = mat4.create();
 		mat4.perspective(pMatrix, this.convertToRadians(45), this.screenWIDTH/this.screenHEIGHT, this.Near, this.Far);
 		return pMatrix;
-		
 	},
 
 	this.ProcessKeyboard = function(direction, deltaTime) {
