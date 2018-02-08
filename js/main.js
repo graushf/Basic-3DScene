@@ -33,6 +33,11 @@ function setupScene() {
     setupPlaneGeometry();
     setupTeapotGeometry();
     setupSphereGeometry();
+    setupCubeGeometry();
+    setupRingGeometry();
+    setupTorusGeometry();
+    setupCylinderGeometry();
+    setupConeGeometry();
 }
 
 function webGLStart() 
