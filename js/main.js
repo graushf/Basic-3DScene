@@ -57,6 +57,9 @@ function setupScene() {
     setupTorusGeometry();
     setupCylinderGeometry();
     setupConeGeometry();
+    setupRabbitGeometry();
+    setupDragonGeometry();
+    setupSuzanneGeometry();
 }
 
 function webGLStart() 

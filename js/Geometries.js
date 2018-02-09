@@ -38,6 +38,15 @@ var coneVertexNormalBuffer;
 var coneVertexTextureCoordBuffer;
 var coneVertexIndexBuffer;
 
+var rabbitVertexNormalBuffer;
+var rabbitVertexPositionBuffer;
+
+var dragonVertexNormalBuffer;
+var dragonVertexPositionBuffer;
+
+var suzanneVertexNormalBuffer;
+var suzanneVertexPositionBuffer;
+
 function setupPlaneGeometry() 
 {
     planeVertexNormalBuffer = gl.createBuffer();
@@ -312,4 +321,76 @@ function handleLoadedTeapot(teapotData)
     teapotVertexIndexBuffer.numItems = teapotData.indices.length;
 
     //document.getElementById("loadingtext").textContent = "";
+}
+
+function setupRabbitGeometry()
+{
+    K3D.load("http://localhost/Basic-3DScene/resources/models/bunny/BunnyObj.obj", handleLoadedModelObjRabbit);
+}
+
+function handleLoadedModelObjRabbit(modelData)
+{
+    var model = K3D.parse.fromOBJ(modelData);
+
+    var normals = K3D.edit.unwrap(model.i_norms, model.c_norms, 3);
+    rabbitVertexNormalBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, rabbitVertexNormalBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+    rabbitVertexNormalBuffer.itemSize = 3;
+    rabbitVertexNormalBuffer.numItems = normals.length / 3;
+
+    var vertices = K3D.edit.unwrap(model.i_verts, model.c_verts, 3);
+    rabbitVertexPositionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, rabbitVertexPositionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    rabbitVertexPositionBuffer.itemSize = 3;
+    rabbitVertexPositionBuffer.numItems = vertices.length / 3;
+}
+
+function setupDragonGeometry()
+{
+    K3D.load("http://localhost/Basic-3DScene/resources/models/stanford_dragon/dragon.obj", handleLoadedModelObjDragon);
+}
+
+function handleLoadedModelObjDragon(modelData)
+{
+    var model = K3D.parse.fromOBJ(modelData);
+
+    var normals = K3D.edit.unwrap(model.i_norms, model.c_norms, 3);
+    dragonVertexNormalBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, dragonVertexNormalBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+    dragonVertexNormalBuffer.itemSize = 3;
+    dragonVertexNormalBuffer.numItems = normals.length / 3;
+
+    var vertices = K3D.edit.unwrap(model.i_verts, model.c_verts, 3);
+    dragonVertexPositionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, dragonVertexPositionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    dragonVertexPositionBuffer.itemSize = 3;
+    dragonVertexPositionBuffer.numItems = vertices.length / 3;
+}
+
+function setupSuzanneGeometry()
+{
+    K3D.load("http://localhost/Basic-3DScene/resources/models/suzanne/suzanne.obj", handleLoadedModelObjSuzanne);
+}
+
+function handleLoadedModelObjSuzanne(modelData)
+{
+    var model = K3D.parse.fromOBJ(modelData);
+
+    var normals = K3D.edit.unwrap(model.i_norms, model.c_norms, 3);
+    suzanneVertexNormalBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, suzanneVertexNormalBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(normals), gl.STATIC_DRAW);
+    suzanneVertexNormalBuffer.itemSize = 3;
+    suzanneVertexNormalBuffer.numItems = normals.length / 3;
+
+    var vertices = K3D.edit.unwrap(model.i_verts, model.c_verts, 3);
+    suzanneVertexPositionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, suzanneVertexPositionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+    suzanneVertexPositionBuffer.itemSize = 3;
+    suzanneVertexPositionBuffer.numItems = vertices.length / 3;
 }

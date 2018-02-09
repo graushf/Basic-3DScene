@@ -13,6 +13,9 @@ function drawScene(programToDraw)
     drawTorus(shaderProgramPhongLightingPass, vec3.fromValues(40.0, 1.5, -60.0), vec3.fromValues(5.0, 5.0, 5.0));
     drawCylinder(shaderProgramPhongLightingPass, vec3.fromValues(50.0, 1.5, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
     drawCone(shaderProgramPhongLightingPass, vec3.fromValues(60.0, 1.5, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
+    drawRabbit(shaderProgramPhongLightingPass, vec3.fromValues(70.0, 0.0, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
+    drawDragon(shaderProgramPhongLightingPass, vec3.fromValues(80.0, 0.0, -60.0), vec3.fromValues(0.65, 0.65, 0.65));
+    drawSuzanne(shaderProgramPhongLightingPass, vec3.fromValues(90.0, 1.0, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
 }
 
 function drawPlane(programShading)
@@ -88,73 +91,75 @@ function drawPlane(programShading)
 
 function drawTeapot(programShading, translatePos, scalePos) 
 {
-    gl.useProgram(programShading);
+    if ((teapotVertexNormalBuffer != null && teapotVertexPositionBuffer != null) && (teapotVertexTextureCoordBuffer != null)) {
+        gl.useProgram(programShading);
 
-    pMatrix = myCamera.GetProjectionMatrix();
+        pMatrix = myCamera.GetProjectionMatrix();
 
-    programShading.vertexPositionAttribute = gl.getAttribLocation(programShading, "aVertexPosition");
-    gl.enableVertexAttribArray(programShading.vertexPositionAttribute);
+        programShading.vertexPositionAttribute = gl.getAttribLocation(programShading, "aVertexPosition");
+        gl.enableVertexAttribArray(programShading.vertexPositionAttribute);
 
-    programShading.vertexNormalAttribute = gl.getAttribLocation(programShading, "aVertexNormal");
-    gl.enableVertexAttribArray(programShading.vertexNormalAttribute);
+        programShading.vertexNormalAttribute = gl.getAttribLocation(programShading, "aVertexNormal");
+        gl.enableVertexAttribArray(programShading.vertexNormalAttribute);
 
-    programShading.textureCoordAttribute = gl.getAttribLocation(programShading, "aTextureCoord");
-    gl.enableVertexAttribArray(programShading.textureCoordAttribute);
+        programShading.textureCoordAttribute = gl.getAttribLocation(programShading, "aTextureCoord");
+        gl.enableVertexAttribArray(programShading.textureCoordAttribute);
 
-    programShading.pMatrixUniform = gl.getUniformLocation(programShading, "uPMatrix");
-    programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
-    programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
+        programShading.pMatrixUniform = gl.getUniformLocation(programShading, "uPMatrix");
+        programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
+        programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
 
-    gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
-    gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
-    gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+        gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+        gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+        gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
 
-    programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
+        programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
 
-    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
-    gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
-    gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+        gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
 
-    gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
-    gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
-    gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+        gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
 
-    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
-    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
-    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
-    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
 
-    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
-    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
-    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
-    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
-    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
-    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
-    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
 
-    mat4.identity(mMatrix);
-    mat4.identity(vMatrix);
+        mat4.identity(mMatrix);
+        mat4.identity(vMatrix);
 
-    vMatrix = myCamera.GetViewMatrix();
+        vMatrix = myCamera.GetViewMatrix();
 
-    transformGeometry(translatePos, scalePos);
+        transformGeometry(translatePos, scalePos);
 
-    gl.uniformMatrix4fv(programShading.pMatrixUniform, false, pMatrix);
-    gl.uniformMatrix4fv(programShading.modelMatrixUniform, false, mMatrix);
-    gl.uniformMatrix4fv(programShading.viewMatrixUniform, false, vMatrix);
+        gl.uniformMatrix4fv(programShading.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(programShading.modelMatrixUniform, false, mMatrix);
+        gl.uniformMatrix4fv(programShading.viewMatrixUniform, false, vMatrix);
 
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
-    gl.vertexAttribPointer(programShading.vertexNormalAttribute, teapotVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
+        gl.vertexAttribPointer(programShading.vertexNormalAttribute, teapotVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
-    gl.vertexAttribPointer(programShading.textureCoordAttribute, teapotVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexTextureCoordBuffer);
+        gl.vertexAttribPointer(programShading.textureCoordAttribute, teapotVertexTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
-    gl.vertexAttribPointer(programShading.vertexPositionAttribute, teapotVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+        gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexPositionBuffer);
+        gl.vertexAttribPointer(programShading.vertexPositionAttribute, teapotVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
 
-    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, teapotVertexIndexBuffer);
-    gl.drawElements(gl.TRIANGLES, teapotVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, teapotVertexIndexBuffer);
+        gl.drawElements(gl.TRIANGLES, teapotVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+    }
 }
 
 function drawSphere(programShading, translatePos, scalePos)
@@ -596,6 +601,231 @@ function drawCone(programShading, translatePos, scalePos)
 
     gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, coneVertexIndexBuffer);
     gl.drawElements(gl.TRIANGLES, coneVertexIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+}
+
+function drawRabbit(programShading, translatePos, scalePos)
+{
+    if (rabbitVertexPositionBuffer != null && rabbitVertexNormalBuffer != null) {
+        gl.disableVertexAttribArray(shaderProgramPhongLightingPass.textureCoordAttribute);
+        gl.useProgram(programShading);
+
+        pMatrix = myCamera.GetProjectionMatrix();
+
+        programShading.vertexPositionAttribute = gl.getAttribLocation(programShading, "aVertexPosition");
+        gl.enableVertexAttribArray(programShading.vertexPositionAttribute);
+
+        programShading.vertexNormalAttribute = gl.getAttribLocation(programShading, "aVertexNormal");
+        gl.enableVertexAttribArray(programShading.vertexNormalAttribute);
+
+        //programShading.textureCoordAttribute = gl.getAttribLocation(programShading, "aTextureCoord");
+        //gl.enableVertexAttribArray(programShading.textureCoordAttribute);
+
+        programShading.pMatrixUniform = gl.getUniformLocation(programShading, "uPMatrix");
+        programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
+        programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
+
+        gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+        gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+        gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+
+        programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
+
+        gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+
+        gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
+
+        mat4.identity(mMatrix);
+        mat4.identity(vMatrix);
+
+        vMatrix = myCamera.GetViewMatrix();
+
+        var aux = mat4.create();
+        mat4.identity(aux);
+
+        mat4.translate(mMatrix, mMatrix, [translatePos[0], translatePos[1], translatePos[2]]);
+        //mat4.rotate(mMatrix, mMatrix, -Math.PI/2.0, vec3.fromValues(1.0, 0.0, 0.0));
+        mat4.fromScaling(aux, [scalePos[0], scalePos[1], scalePos[2]]);
+        mat4.multiply(mMatrix, mMatrix, aux);
+
+        gl.uniformMatrix4fv(programShading.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(programShading.modelMatrixUniform, false, mMatrix);
+        gl.uniformMatrix4fv(programShading.viewMatrixUniform, false, vMatrix);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, rabbitVertexNormalBuffer);
+        gl.vertexAttribPointer(programShading.vertexNormalAttribute, rabbitVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, rabbitVertexPositionBuffer);
+        gl.vertexAttribPointer(programShading.vertexPositionAttribute, rabbitVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.drawArrays(gl.TRIANGLES, 0, rabbitVertexPositionBuffer.numItems);
+    }
+}
+
+function drawDragon(programShading, translatePos, scalePos)
+{
+    if (dragonVertexPositionBuffer != null && dragonVertexNormalBuffer != null) {
+        gl.disableVertexAttribArray(shaderProgramPhongLightingPass.textureCoordAttribute);
+        gl.useProgram(programShading);
+
+        pMatrix = myCamera.GetProjectionMatrix();
+
+        programShading.vertexPositionAttribute = gl.getAttribLocation(programShading, "aVertexPosition");
+        gl.enableVertexAttribArray(programShading.vertexPositionAttribute);
+
+        programShading.vertexNormalAttribute = gl.getAttribLocation(programShading, "aVertexNormal");
+        gl.enableVertexAttribArray(programShading.vertexNormalAttribute);
+
+        //programShading.textureCoordAttribute = gl.getAttribLocation(programShading, "aTextureCoord");
+        //gl.enableVertexAttribArray(programShading.textureCoordAttribute);
+
+        programShading.pMatrixUniform = gl.getUniformLocation(programShading, "uPMatrix");
+        programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
+        programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
+
+        gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+        gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+        gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+
+        programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
+
+        gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+
+        gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
+
+        mat4.identity(mMatrix);
+        mat4.identity(vMatrix);
+
+        vMatrix = myCamera.GetViewMatrix();
+
+        var aux = mat4.create();
+        mat4.identity(aux);
+
+        mat4.translate(mMatrix, mMatrix, [translatePos[0], translatePos[1], translatePos[2]]);
+        //mat4.rotate(mMatrix, mMatrix, -Math.PI/2.0, vec3.fromValues(1.0, 0.0, 0.0));
+        mat4.fromScaling(aux, [scalePos[0], scalePos[1], scalePos[2]]);
+        mat4.multiply(mMatrix, mMatrix, aux);
+
+        gl.uniformMatrix4fv(programShading.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(programShading.modelMatrixUniform, false, mMatrix);
+        gl.uniformMatrix4fv(programShading.viewMatrixUniform, false, vMatrix);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, dragonVertexNormalBuffer);
+        gl.vertexAttribPointer(programShading.vertexNormalAttribute, dragonVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, dragonVertexPositionBuffer);
+        gl.vertexAttribPointer(programShading.vertexPositionAttribute, dragonVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.drawArrays(gl.TRIANGLES, 0, dragonVertexPositionBuffer.numItems);
+    }
+}
+
+function drawSuzanne(programShading, translatePos, scalePos)
+{
+    if (suzanneVertexPositionBuffer != null && suzanneVertexNormalBuffer != null) {
+        gl.disableVertexAttribArray(shaderProgramPhongLightingPass.textureCoordAttribute);
+        gl.useProgram(programShading);
+
+        pMatrix = myCamera.GetProjectionMatrix();
+
+        programShading.vertexPositionAttribute = gl.getAttribLocation(programShading, "aVertexPosition");
+        gl.enableVertexAttribArray(programShading.vertexPositionAttribute);
+
+        programShading.vertexNormalAttribute = gl.getAttribLocation(programShading, "aVertexNormal");
+        gl.enableVertexAttribArray(programShading.vertexNormalAttribute);
+
+        //programShading.textureCoordAttribute = gl.getAttribLocation(programShading, "aTextureCoord");
+        //gl.enableVertexAttribArray(programShading.textureCoordAttribute);
+
+        programShading.pMatrixUniform = gl.getUniformLocation(programShading, "uPMatrix");
+        programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
+        programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
+
+        gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+        gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+        gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+
+        programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
+
+        gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+
+        gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+        gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+        gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+        gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+        gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
+
+        mat4.identity(mMatrix);
+        mat4.identity(vMatrix);
+
+        vMatrix = myCamera.GetViewMatrix();
+
+        var aux = mat4.create();
+        mat4.identity(aux);
+
+        mat4.translate(mMatrix, mMatrix, [translatePos[0], translatePos[1], translatePos[2]]);
+        //mat4.rotate(mMatrix, mMatrix, -Math.PI/2.0, vec3.fromValues(1.0, 0.0, 0.0));
+        mat4.fromScaling(aux, [scalePos[0], scalePos[1], scalePos[2]]);
+        mat4.multiply(mMatrix, mMatrix, aux);
+
+        gl.uniformMatrix4fv(programShading.pMatrixUniform, false, pMatrix);
+        gl.uniformMatrix4fv(programShading.modelMatrixUniform, false, mMatrix);
+        gl.uniformMatrix4fv(programShading.viewMatrixUniform, false, vMatrix);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, suzanneVertexNormalBuffer);
+        gl.vertexAttribPointer(programShading.vertexNormalAttribute, suzanneVertexNormalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, suzanneVertexPositionBuffer);
+        gl.vertexAttribPointer(programShading.vertexPositionAttribute, suzanneVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+        gl.drawArrays(gl.TRIANGLES, 0, suzanneVertexPositionBuffer.numItems);
+    }
 }
 
 function transformGeometry( transformVec, scaleVec) 
