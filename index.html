@@ -12,6 +12,157 @@
         <script type="text/javascript" src="js/ShaderUtils.js"></script>
         <script type="text/javascript" src="js/Eventhandler.js"></script>
 
+        <script id="phongLightingPass-fs" type="x-shader/x-fragment">
+            precision mediump float;
+
+            varying vec3 vFragPos;
+            varying vec3 vNormal;
+            varying vec2 vTextureCoord;
+
+            uniform vec3 staticColor;
+
+            uniform vec3 lightPos;
+            uniform vec3 viewPos;
+            uniform vec3 lightColor;
+
+            uniform int uUseTexture;
+
+            uniform int uDisableLighting;
+
+            struct Material {
+                sampler2D diffuse;
+                vec3 diffuseColor;
+                float shininess;
+                int hasSpecular;
+            };
+
+            struct DirLight {
+                vec3 direction;
+
+                vec3 ambient;
+                vec3 diffuse;
+                vec3 specular;
+            };
+
+            struct PointLight {
+                vec3 position;
+
+                float constant;
+                float linear;
+                float quadratic;
+
+                vec3 ambient;
+                vec3 diffuse;
+                vec3 specular;
+            };
+
+            #define NR_POINT_LIGHTS 1
+            uniform PointLight pointLights[NR_POINT_LIGHTS];
+
+            uniform DirLight dirLight;
+            uniform Material material;
+
+            vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
+            vec3 CalCPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+
+            void main()
+            {   
+                vec3 result = staticColor;
+                //gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0); return;
+                if (uDisableLighting == 0)
+                {
+                    vec3 norm = normalize(vNormal);
+                    vec3 lightDir = normalize(lightPos - vFragPos);
+                    vec3 viewDir = normalize(viewPos - vFragPos);
+
+                    result = vec3(0.0, 0.0, 0.0);
+                    result += CalcDirLight(dirLight, norm, viewDir);
+                    //for (int i = 0; i < NR_POINT_LIGHTS; i++) {
+                    //    result += CalcPointLights(pointsLights[i], norm, vFragPos, viewDir);
+                    //}
+                }
+
+                gl_FragColor = vec4(result, 1.0);
+            }
+
+            vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
+                vec3 lightDir = normalize(-light.direction);
+                // diffuse shading
+                float diff = max(dot(normal, lightDir), 0.0);
+                // specular shading
+                vec3 reflectDir = reflect(-lightDir, normal);
+                float spec = 0.0;
+                if (material.hasSpecular == 1) {
+                    spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+                }
+
+                // combine results
+                vec3 ambient;
+                vec3 diffuse;
+
+                if (uUseTexture == 1) {
+                    ambient = light.ambient * vec3(texture2D(material.diffuse, vTextureCoord));
+                    diffuse = light.diffuse * diff * vec3(texture2D(material.diffuse, vTextureCoord));
+                } else {
+                    //ambient = light.ambient * light * diffuse;
+                    //diffuse = light.diffuse * diff * light.diffuse;
+                    ambient = light.ambient * material.diffuseColor;
+                    diffuse = light.diffuse * diff * material.diffuseColor;
+                }
+
+                vec3 specular = light.specular * spec * light.diffuse;
+
+                return (ambient + diffuse + specular);
+            }
+
+            vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
+                vec3 lightDir = normalize(light.position - fragPos);
+
+                // diffuse shading
+                float diff = max(dot(normal, lightDir), 0.0);
+                // specular shading
+                vec3 reflectDir = reflect(-lightDir, normal);
+                float spec = 0.0;
+                if (material.hasSpecular == 1) {
+                    spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+                }
+                // attenuation
+                float distance = length(light.position - fragPos);
+                float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+
+                // combine results
+                vec3 ambient = light.ambient * lightColor;
+                vec3 diffuse = lightColor * diff * lightColor;
+                vec3 specular = light.specular * spec * light.diffuse;
+                ambient *= attenuation;
+                diffuse *= attenuation;
+                specular *= attenuation;
+                return (diffuse + specular);
+            }
+            
+        </script>
+
+        <script id="phongLightingPass-vs" type="x-shader/x-vertex">
+            attribute vec3 aVertexPosition;
+            attribute vec3 aVertexNormal;
+            attribute vec2 aTextureCoord;
+
+            varying vec3 vNormal;
+            varying vec3 vFragPos;
+            varying vec2 vTextureCoord;
+
+            uniform mat4 uMMatrix;
+            uniform mat4 uVMatrix;
+            uniform mat4 uPMatrix;
+
+            void main(void) {
+                gl_Position = uPMatrix * uVMatrix * uMMatrix * vec4(aVertexPosition, 1.0);
+                vFragPos = vec3(uMMatrix * vec4(aVertexPosition, 1.0));
+                vTextureCoord = aTextureCoord;
+                vNormal = aVertexNormal;
+            }
+        </script>
+
         <script id="basic-shader-fs" type="x-shader/x-fragment">
             precision mediump float;
 

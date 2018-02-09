@@ -5,14 +5,14 @@ var vMatrix = mat4.create();
 
 function drawScene(programToDraw)
  {
-    drawPlane(programToDraw);
-    drawTeapot(programToDraw, vec3.fromValues(0.0, -1.0, -60.0), vec3.fromValues(0.5, 0.5, 0.5));
-    drawSphere(programToDraw, vec3.fromValues(10.5, -1.0, -50.0), vec4.fromValues(1.0, 1.0, 1.0));
-    drawCube(programToDraw, vec3.fromValues(0.0, 5.0, -40.0), vec4.fromValues(2.0, 2.0, 2.0));
-    drawRing(programToDraw, vec3.fromValues(20.0, 0.0, -10.0), vec3.fromValues(1.0, 1.0, 1.0));
-    drawTorus(programToDraw, vec3.fromValues(-20.0, 0.0, -10.0), vec3.fromValues(1.0, 1.0, 1.0));
-    drawCylinder(programToDraw, vec3.fromValues(0.0, 0.0, -5.0), vec3.fromValues(1.0, 1.0, 1.0));
-    drawCone(programToDraw, vec3.fromValues(7.0, 0.0, -30.0), vec3.fromValues(1.0, 1.0, 1.0));
+    drawPlane(shaderProgramPhongLightingPass);
+    drawTeapot(shaderProgramPhongLightingPass, vec3.fromValues(0.0, 1.5, -60.0), vec3.fromValues(0.3, 0.3, 0.3));
+    drawSphere(shaderProgramPhongLightingPass, vec3.fromValues(10.0, 1.5, -60.0), vec4.fromValues(4.0, 4.0, 4.0));
+    drawCube(shaderProgramPhongLightingPass, vec3.fromValues(20.0, 1.5, -60.0), vec4.fromValues(4.5, 4.5, 4.5));
+    drawRing(shaderProgramPhongLightingPass, vec3.fromValues(30.0, 1.5, -60.0), vec3.fromValues(5.0, 5.0, 5.0));
+    drawTorus(shaderProgramPhongLightingPass, vec3.fromValues(40.0, 1.5, -60.0), vec3.fromValues(5.0, 5.0, 5.0));
+    drawCylinder(shaderProgramPhongLightingPass, vec3.fromValues(50.0, 1.5, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
+    drawCone(shaderProgramPhongLightingPass, vec3.fromValues(60.0, 1.5, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
 }
 
 function drawPlane(programShading)
@@ -34,9 +34,33 @@ function drawPlane(programShading)
     programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
     programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
 
+    gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+    gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+    gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+
     programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
 
     gl.uniform3f(programShading.staticColorUniform, 1.0, 0.0, 0.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
+
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix)
@@ -81,9 +105,32 @@ function drawTeapot(programShading, translatePos, scalePos)
     programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
     programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
 
+    gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+    gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+    gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+
     programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
 
     gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
@@ -129,7 +176,32 @@ function drawSphere(programShading, translatePos, scalePos)
     programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
     programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
 
+    gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+    gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+    gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+
     programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
+
+    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
 
     gl.uniform3f(programShading.staticColorUniform, 0.0, 0.0, 1.0);
 
@@ -177,9 +249,32 @@ function drawCube(programShading, translatePos, scalePos)
     programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
     programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
 
+    gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+    gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+    gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+
     programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
 
-    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 1.0);
+    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
@@ -225,9 +320,32 @@ function drawRing(programShading, translatePos, scalePos)
     programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
     programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
 
+    gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+    gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+    gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+
     programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
 
-    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 1.0);
+    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
@@ -273,9 +391,32 @@ function drawTorus(programShading, translatePos, scalePos)
     programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
     programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
 
+    gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+    gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+    gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+
     programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
 
-    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 1.0);
+    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
@@ -321,16 +462,46 @@ function drawCylinder(programShading, translatePos, scalePos)
     programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
     programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
 
+    gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+    gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+    gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+
     programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
 
-    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 1.0);
+    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
 
     vMatrix = myCamera.GetViewMatrix();
 
-    transformGeometry(translatePos, scalePos);
+    var aux = mat4.create();
+    mat4.identity(aux);
+
+    mat4.translate(mMatrix, mMatrix, [translatePos[0], translatePos[1], translatePos[2]]);
+    mat4.rotate(mMatrix, mMatrix, Math.PI/2.0, vec3.fromValues(1.0, 0.0, 0.0));
+    mat4.fromScaling(aux, [scalePos[0], scalePos[1], scalePos[2]]);
+    mat4.multiply(mMatrix, mMatrix, aux);
+    
 
     gl.uniformMatrix4fv(programShading.pMatrixUniform, false, pMatrix);
     gl.uniformMatrix4fv(programShading.modelMatrixUniform, false, mMatrix);
@@ -369,16 +540,45 @@ function drawCone(programShading, translatePos, scalePos)
     programShading.modelMatrixUniform = gl.getUniformLocation(programShading, "uMMatrix");
     programShading.viewMatrixUniform = gl.getUniformLocation(programShading, "uVMatrix");
 
+    gl.uniform3f(programShading.lightColorUniform, 1.0, 1.0, 1.0);
+    gl.uniform3f(programShading.linkPosUniform, lightPos[0], lightPos[1], lightPos[2]);
+    gl.uniform3f(programShading.viewPosUniform, myCamera.Position[0], myCamera.Position[1], myCamera.Position[2]);
+
     programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
 
-    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 1.0);
+    gl.uniform3f(programShading.staticColorUniform, 0.0, 1.0, 0.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.direction"), -0.2, -1.0, -0.3);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.ambient"), 0.05, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.diffuse"), 0.8, 0.8, 0.8);
+    gl.uniform3f(gl.getUniformLocation(programShading, "dirLight.specular"), 0.5, 0.5, 0.5);
+
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].position"), lightPointPos[0], lightPointPos[1], lightPointPos[2]);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].ambient"), 1.0, 0.05, 0.05);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].diffuse"), 181/255, 134/255, 144/255);
+    gl.uniform3f(gl.getUniformLocation(programShading, "pointLights[0].specular"), 5.0, 5.0, 5.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].constant"), 1.0);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].linear"), 0.02);
+    gl.uniform1f(gl.getUniformLocation(programShading, "pointsLights[0].quadratic"), 0.010);
 
     mat4.identity(mMatrix);
     mat4.identity(vMatrix);
 
     vMatrix = myCamera.GetViewMatrix();
 
-    transformGeometry(translatePos, scalePos);
+    var aux = mat4.create();
+    mat4.identity(aux);
+
+    mat4.translate(mMatrix, mMatrix, [translatePos[0], translatePos[1], translatePos[2]]);
+    mat4.rotate(mMatrix, mMatrix, -Math.PI/2.0, vec3.fromValues(1.0, 0.0, 0.0));
+    mat4.fromScaling(aux, [scalePos[0], scalePos[1], scalePos[2]]);
+    mat4.multiply(mMatrix, mMatrix, aux);
 
     gl.uniformMatrix4fv(programShading.pMatrixUniform, false, pMatrix);
     gl.uniformMatrix4fv(programShading.modelMatrixUniform, false, mMatrix);

@@ -28,8 +28,6 @@ function handleKeys() {
     if (currentlyPressedKeys[27]) {
         enableMouse = !enableMouse;
     }
-
-    debugMouse();
 }
 
 var xoffset;
@@ -68,17 +66,4 @@ function handleMouseDown(event) {
 
 function handleMouseUp(event) {
     mouseDown = false;
-
-    // xpos = event.clientX;
-    // ypos = event.clientY;
-
-    // lastX = xpos;
-    // lastY = ypos;
-}
-
-function debugMouse() {
-    //console.log("xoffset: "+xoffset);
-    //console.log("yoffset: "+yoffset);
-    console.log("xpos: "+xpos);
-    console.log("ypos: "+ypos);
 }

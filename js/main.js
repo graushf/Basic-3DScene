@@ -12,6 +12,10 @@ var mouseDown = false;
 var deltaTime = 0.0;    // Time between current frame and last frame
 var lastFrame = 0.0;    // Time of last frame
 
+// Lighting 
+var lightPos = vec3.fromValues(10.0, 0.0, 0.0);
+var lightPointPos = vec3.fromValues(10.0, 10.0, 15.0);
+
 function initGL(canvas) 
 {
     try {
@@ -66,6 +70,7 @@ function webGLStart()
 
     
     gl.clearColor(0.0, 0.0, 0.0, 1.0);
+    gl.enable(gl.DEPTH_TEST);
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     document.onkeydown = handleKeyDown;

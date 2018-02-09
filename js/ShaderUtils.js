@@ -1,4 +1,5 @@
 var shaderProgramBasic;
+var shaderProgramPhongLightingPass;
 
 function getShader(gl, id) 
 {
@@ -38,7 +39,8 @@ function getShader(gl, id)
 
 function setupShadersScene() 
 {
-    initShaderBasic();
+	initShaderBasic();
+	initShaderPhongLightingPass();
 }
 
 function initShaderBasic() 
@@ -54,4 +56,19 @@ function initShaderBasic()
     if (!gl.getProgramParameter(shaderProgramBasic, gl.LINK_STATUS)) {
         alert("Could not initialise shaders");
     }
+}
+
+function initShaderPhongLightingPass()
+{
+	var fragmentShader = getShader(gl, "phongLightingPass-fs");
+	var vertexShader = getShader(gl, "phongLightingPass-vs");
+
+	shaderProgramPhongLightingPass = gl.createProgram();
+	gl.attachShader(shaderProgramPhongLightingPass, vertexShader);
+	gl.attachShader(shaderProgramPhongLightingPass, fragmentShader);
+	gl.linkProgram(shaderProgramPhongLightingPass);
+
+	if (!gl.getProgramParameter(shaderProgramPhongLightingPass, gl.LINK_STATUS)) {
+		alert("Could not initialise shaders");
+	}
 }
