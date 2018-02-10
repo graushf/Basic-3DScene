@@ -69,9 +69,9 @@ function setupPlaneGeometry()
     gl.bindBuffer(gl.ARRAY_BUFFER, planeVertexTextureCoordBuffer);
     var textureCoords = [
         0.0, 0.0,
-        10.0, 0.0,
-        10.0, 10.0,
-        0.0, 10.0
+        100.0, 0.0,
+        100.0, 100.0,
+        0.0, 100.0
     ];
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(textureCoords), gl.STATIC_DRAW);
     planeVertexTextureCoordBuffer.itemSize = 2;

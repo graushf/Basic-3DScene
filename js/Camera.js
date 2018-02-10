@@ -38,7 +38,7 @@ function Camera3D() {
 	// DEFAULT VALUES
 	this.YAW = -90.0;
 	this.PITCH = 0.0;
-	this.SPEED = 10.0;
+	this.SPEED = 3.0;
 	this.SENSITIVITY = 0.25;
 	this.ZOOM = 45.0;
 	this.SCROLLSENSITIVITY = 0.05;

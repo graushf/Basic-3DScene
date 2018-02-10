@@ -71,6 +71,7 @@ function webGLStart()
     initCamera();
     setupScene();
     setupShadersScene();
+    initTextures();
 
     
     gl.clearColor(0.0, 0.0, 0.0, 1.0);

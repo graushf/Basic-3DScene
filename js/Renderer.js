@@ -6,17 +6,17 @@ var vMatrix = mat4.create();
 function drawScene(programToDraw)
  {
     drawScreenFillingGeometry(shaderProgramScreenFillPass);
-    //drawPlane(shaderProgramPhongLightingPass);
-    drawTeapot(shaderProgramPhongLightingPass, vec3.fromValues(0.0, 1.5, -60.0), vec3.fromValues(0.3, 0.3, 0.3));
-    drawSphere(shaderProgramPhongLightingPass, vec3.fromValues(10.0, 1.5, -60.0), vec4.fromValues(4.0, 4.0, 4.0));
-    drawCube(shaderProgramPhongLightingPass, vec3.fromValues(20.0, 1.5, -60.0), vec4.fromValues(4.5, 4.5, 4.5));
-    drawRing(shaderProgramPhongLightingPass, vec3.fromValues(30.0, 1.5, -60.0), vec3.fromValues(5.0, 5.0, 5.0));
-    drawTorus(shaderProgramPhongLightingPass, vec3.fromValues(40.0, 1.5, -60.0), vec3.fromValues(5.0, 5.0, 5.0));
-    drawCylinder(shaderProgramPhongLightingPass, vec3.fromValues(50.0, 1.5, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
-    drawCone(shaderProgramPhongLightingPass, vec3.fromValues(60.0, 1.5, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
-    drawRabbit(shaderProgramPhongLightingPass, vec3.fromValues(70.0, 0.0, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
-    drawDragon(shaderProgramPhongLightingPass, vec3.fromValues(80.0, 0.0, -60.0), vec3.fromValues(0.65, 0.65, 0.65));
-    drawSuzanne(shaderProgramPhongLightingPass, vec3.fromValues(90.0, 1.0, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
+    drawPlane(shaderProgramPhongLightingPass);
+    drawTeapot(shaderProgramPhongLightingPass, vec3.fromValues(0.0, 0.0, -60.0), vec3.fromValues(0.1, 0.1, 0.1));
+    drawSphere(shaderProgramPhongLightingPass, vec3.fromValues(10.0, 1.5, -60.0), vec4.fromValues(1.5, 1.5, 1.5));
+    drawCube(shaderProgramPhongLightingPass, vec3.fromValues(20.0, 1.5, -60.0), vec4.fromValues(2.0, 2.0, 2.0));
+    drawRing(shaderProgramPhongLightingPass, vec3.fromValues(30.0, 1.5, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
+    drawTorus(shaderProgramPhongLightingPass, vec3.fromValues(40.0, 1.5, -60.0), vec3.fromValues(2.0, 2.0, 2.0));
+    drawCylinder(shaderProgramPhongLightingPass, vec3.fromValues(50.0, 1.5, -60.0), vec3.fromValues(1.0, 1.0, 1.0));
+    drawCone(shaderProgramPhongLightingPass, vec3.fromValues(60.0, 1.5, -60.0), vec3.fromValues(1.0, 1.0, 1.0));
+    drawRabbit(shaderProgramPhongLightingPass, vec3.fromValues(70.0, 0.0, -60.0), vec3.fromValues(1.0, 1.0, 1.0));
+    drawDragon(shaderProgramPhongLightingPass, vec3.fromValues(80.0, 0.0, -60.0), vec3.fromValues(0.30, 0.30, 0.30));
+    drawSuzanne(shaderProgramPhongLightingPass, vec3.fromValues(90.0, 1.0, -60.0), vec3.fromValues(1.0, 1.0, 1.0));
 }
 
 function drawPlane(programShading)
@@ -45,9 +45,12 @@ function drawPlane(programShading)
     programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
 
     gl.uniform3f(programShading.staticColorUniform, 1.0, 0.0, 0.0);
-    gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 0);
+    gl.uniform1i(gl.getUniformLocation(programShading, "uUseTexture"), 1);
     gl.uniform1i(gl.getUniformLocation(programShading, "uDisableLighting"), 0);
 
+    gl.activeTexture(gl.TEXTURE0);
+    gl.bindTexture(gl.TEXTURE_2D, checkerGrayTexture);
+    gl.uniform1i(gl.getUniformLocation(programShading, "material.diffuse"), 0);
     gl.uniform3f(gl.getUniformLocation(programShading, "material.diffuseColor"), 0.0, 0.0, 1.0);
     gl.uniform1f(gl.getUniformLocation(programShading, "material.shininess"), 64.0);
     gl.uniform1i(gl.getUniformLocation(programShading, "material.hasSpecular"), 1);
