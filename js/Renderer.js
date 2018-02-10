@@ -5,7 +5,8 @@ var vMatrix = mat4.create();
 
 function drawScene(programToDraw)
  {
-    drawPlane(shaderProgramPhongLightingPass);
+    drawScreenFillingGeometry(shaderProgramScreenFillPass);
+    //drawPlane(shaderProgramPhongLightingPass);
     drawTeapot(shaderProgramPhongLightingPass, vec3.fromValues(0.0, 1.5, -60.0), vec3.fromValues(0.3, 0.3, 0.3));
     drawSphere(shaderProgramPhongLightingPass, vec3.fromValues(10.0, 1.5, -60.0), vec4.fromValues(4.0, 4.0, 4.0));
     drawCube(shaderProgramPhongLightingPass, vec3.fromValues(20.0, 1.5, -60.0), vec4.fromValues(4.5, 4.5, 4.5));
@@ -826,6 +827,54 @@ function drawSuzanne(programShading, translatePos, scalePos)
 
         gl.drawArrays(gl.TRIANGLES, 0, suzanneVertexPositionBuffer.numItems);
     }
+}
+
+function drawScreenFillingGeometry(programShading) {
+    gl.disable(gl.DEPTH_TEST);
+    //gl.disableVertexAttribArray(shaderProgramPhongLightingPass.vertexPositionAttribute);
+    //gl.disableVertexAttribArray(shaderProgramPhongLightingPass.textureCoordAttribute);
+    //gl.disableVertexAttribArray(shaderProgramPhongLightingPass.vertexNormalAttribute);
+    gl.useProgram(programShading);
+
+    programShading.vertexPositionAttribute = gl.getAttribLocation(programShading, "aVertexPosition");
+    gl.enableVertexAttribArray(programShading.vertexPositionAttribute);
+
+    programShading.textureCoordAttribute = gl.getAttribLocation(programShading, "aTextureCoord");
+    gl.enableVertexAttribArray(programShading.textureCoordAttribute);
+
+    programShading.staticColorUniform = gl.getUniformLocation(programShading, "uStaticColor");
+
+    programShading.cameraToWorldMatrixUniform = gl.getUniformLocation(programShading, "uCameraToWorldMatrix")
+    programShading.invProjectionMatrixUniform = gl.getUniformLocation(programShading, "uInvProjectionMatrix");
+    programShading.resolutionUniform = gl.getUniformLocation(programShading, "uResolution");
+
+    programShading.lightUniform = gl.getUniformLocation(programShading, "uLight");
+
+    gl.uniform3f(programShading.staticColorUniform, 1.0, 1.0, 0.0);
+    var invViewMatrix = mat4.create();
+    invViewMatrix = myCamera.GetViewMatrix();
+    mat4.invert(invViewMatrix, invViewMatrix);
+    gl.uniformMatrix4fv(programShading.cameraToWorldMatrixUniform, false, invViewMatrix);
+    var invPMatrix = mat4.create();
+    invPMatrix = myCamera.GetProjectionMatrix();
+    mat4.invert(invPMatrix, invPMatrix);
+    gl.uniformMatrix4fv(programShading.invProjectionMatrixUniform, false, invPMatrix);
+    gl.uniform2f(programShading.resolutionUniform, gl.viewportWidth, gl.viewportHeight);
+    
+    var lightPos = vec3.fromValues(1.0, 0.5, 0.2);
+    vec3.normalize(lightPos, lightPos);
+    gl.uniform3f(programShading.lightUniform, lightPos[0], lightPos[1], lightPos[2]);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, screenFillingVertexPositionBuffer);
+    gl.vertexAttribPointer(programShading.vertexPositionAttribute, screenFillingVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ARRAY_BUFFER, screenFillingTextureCoordBuffer);
+    gl.vertexAttribPointer(programShading.textureCoordAttribute, screenFillingTextureCoordBuffer.itemSize, gl.FLOAT, false, 0, 0);
+
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, screenFillingIndexBuffer);
+    gl.drawElements(gl.TRIANGLES, screenFillingIndexBuffer.numItems, gl.UNSIGNED_SHORT, 0);
+
+    gl.enable(gl.DEPTH_TEST);
 }
 
 function transformGeometry( transformVec, scaleVec) 

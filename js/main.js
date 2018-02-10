@@ -60,6 +60,7 @@ function setupScene() {
     setupRabbitGeometry();
     setupDragonGeometry();
     setupSuzanneGeometry();
+    setupScreenFillingGeometry();
 }
 
 function webGLStart() 
